@@ -1,0 +1,13 @@
+image: ubuntu:24.04
+
+pipelines:
+  default:
+    - step:
+        name: Build and Test
+        script:
+          - apt-get update && apt-get install -y gcc g++ cmake ninja-build git python3-pip
+          - pip3 install conan
+          - conan install . --build=missing
+          - cmake -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+          - cmake --build build
+          - ctest --test-dir build -V
